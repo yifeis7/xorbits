@@ -22,55 +22,74 @@ MARS_LIGHGBM_CALLABLES = {}
 
 if lightgbm is not None:
     import inspect
-    from typing import Callable, Dict, Optional, List
-    
-    from ..._mars.learn.contrib.lightgbm.classifier import LGBMClassifier as MarsLGBMClassifier
-    from ..._mars.learn.contrib.lightgbm.regressor import LGBMRegressor as MarsLGBMRegressor
+    from typing import Callable, Dict, List, Optional
+
+    from ..._mars.learn.contrib.lightgbm.classifier import (
+        LGBMClassifier as MarsLGBMClassifier,
+    )
     from ..._mars.learn.contrib.lightgbm.ranker import LGBMRanker as MarsLGBMRanker
-    from ...core.adapter import wrap_mars_callable, mars_lightgbm
-    
+    from ..._mars.learn.contrib.lightgbm.regressor import (
+        LGBMRegressor as MarsLGBMRegressor,
+    )
+    from ...core.adapter import mars_lightgbm, wrap_mars_callable
+
     class LGBMClassifier(MarsLGBMClassifier):
         pass
+
     class LGBMRegressor(MarsLGBMRegressor):
         pass
+
     class LGBMRanker(MarsLGBMRanker):
         pass
+
     def _collect_module_callables(
         skip_members: Optional[List[str]] = None,
     ) -> Dict[str, Callable]:
         module_callables: Dict[str, Callable] = dict()
-        
+
         module_callables[lightgbm.LGBMClassifier.__name__] = LGBMClassifier
         # install module functions.
         for name, func in inspect.getmembers(LGBMClassifier, inspect.isfunction):
-            module_callables[name] = wrap_mars_callable(
-                func,
-                attach_docstring=True,
-                is_cls_member=False,
-                docstring_src_module=lightgbm.LGBMClassifier,
-                docstring_src=getattr(lightgbm.LGBMClassifier, name, None),
+            setattr(
+                LGBMClassifier,
+                name,
+                wrap_mars_callable(
+                    func,
+                    attach_docstring=False,
+                    is_cls_member=False,
+                    docstring_src_module=lightgbm.LGBMClassifier,
+                    docstring_src=getattr(lightgbm.LGBMClassifier, name, None),
+                ),
             )
-            
+
         module_callables[lightgbm.LGBMRegressor.__name__] = LGBMRegressor
         for name, func in inspect.getmembers(LGBMRegressor, inspect.isfunction):
-            module_callables[name] = wrap_mars_callable(
-                func,
-                attach_docstring=True,
-                is_cls_member=False,
-                docstring_src_module=lightgbm.LGBMRegressor,
-                docstring_src=getattr(lightgbm.LGBMRegressor, name, None),
+            setattr(
+                LGBMRegressor,
+                name,
+                wrap_mars_callable(
+                    func,
+                    attach_docstring=True,
+                    is_cls_member=False,
+                    docstring_src_module=lightgbm.LGBMRegressor,
+                    docstring_src=getattr(lightgbm.LGBMRegressor, name, None),
+                ),
             )
         module_callables[lightgbm.LGBMRanker.__name__] = LGBMRanker
         for name, func in inspect.getmembers(LGBMRanker, inspect.isfunction):
-            module_callables[name] = wrap_mars_callable(
-                func,
-                attach_docstring=True,
-                is_cls_member=False,
-                docstring_src_module=lightgbm.LGBMRanker,
-                docstring_src=getattr(lightgbm.LGBMRanker, name, None),
+            setattr(
+                LGBMRanker,
+                name,
+                wrap_mars_callable(
+                    func,
+                    attach_docstring=True,
+                    is_cls_member=False,
+                    docstring_src_module=lightgbm.LGBMRanker,
+                    docstring_src=getattr(lightgbm.LGBMRanker, name, None),
+                ),
             )
-        for name, func in inspect.getmembers(lightgbm, inspect.isfunction):
-            if name in skip_members:
+        for name, func in inspect.getmembers(mars_lightgbm, inspect.isfunction):
+            if skip_members is not None and name in skip_members:
                 continue
             module_callables[name] = wrap_mars_callable(
                 func,
@@ -80,4 +99,5 @@ if lightgbm is not None:
                 docstring_src=getattr(lightgbm, name, None),
             )
         return module_callables
-    MARS_LIGHGBM_CALLABLES = _collect_module_callables(skip_members=['register_op'])
+
+    MARS_LIGHGBM_CALLABLES = _collect_module_callables(skip_members=["register_op"])

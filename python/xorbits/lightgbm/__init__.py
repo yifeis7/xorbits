@@ -16,10 +16,13 @@
 
 def __dir__():
     from .mars_adapters import MARS_LIGHGBM_CALLABLES
+
     return list(MARS_LIGHGBM_CALLABLES.keys())
+
 
 def __getattr__(name: str):
     from .mars_adapters import MARS_LIGHGBM_CALLABLES
+
     if name in MARS_LIGHGBM_CALLABLES:
         return MARS_LIGHGBM_CALLABLES[name]
     else:

@@ -380,7 +380,6 @@ def to_mars(inp: Union[DataRef, Tuple, List, Dict]):
     """
     Convert xorbits data references to mars entities and execute them if needed.
     """
-
     if isinstance(inp, DataRef):
         mars_entity = getattr(inp.data, "_mars_entity", None)
         if mars_entity is None:  # pragma: no cover
