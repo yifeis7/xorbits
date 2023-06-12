@@ -11,18 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-def __dir__():
-    from .mars_adapters import MARS_JOBLIB_CALLABLES
-
-    return list(MARS_JOBLIB_CALLABLES.keys())
-
-
-def __getattr__(name: str):
-    from .mars_adapters import MARS_JOBLIB_CALLABLES
-
-    if name in MARS_JOBLIB_CALLABLES:
-        return MARS_JOBLIB_CALLABLES[name]
-    else:
-        raise AttributeError(f"Module {__name__} does not support {name} now.")
+from .backend import register_xorbits_backend
